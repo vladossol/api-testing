@@ -1,9 +1,9 @@
 const { test, expect } = require('@playwright/test');
 const longTitle = 'A9f3K2M7xQ4R8Z1bD6Yc0EJpL5NnHqSWTmUoVXiFgrCaytBdOeIPhsukwjlvG';
 
-test.describe('job creation - positive scenarios', () => {
+test.describe('POST - positive scenarios', () => {
 
-  test('create job - high priority', async ({ request }) => {
+  test('POST - high priority', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: 'Process data',
@@ -22,7 +22,7 @@ test.describe('job creation - positive scenarios', () => {
     expect(body).toHaveProperty('created_at');
   });
 
-  test('create job - medium priority', async ({ request }) => {
+  test('POST - medium priority', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: 'Process code',
@@ -36,7 +36,7 @@ test.describe('job creation - positive scenarios', () => {
     expect(body.priority).toBe('medium');
   });
 
-  test('create job - low priority', async ({ request }) => {
+  test('POST - low priority', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: 'Process API',
@@ -50,7 +50,7 @@ test.describe('job creation - positive scenarios', () => {
     expect(body.priority).toBe('low');
   });
 
-  test('create job - 1 char title', async ({ request }) => {
+  test('POST - 1 char title', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: 'A',
@@ -64,7 +64,7 @@ test.describe('job creation - positive scenarios', () => {
     expect(body.title).toBe('A');
   });
 
-  test('create job - 100 chars title', async ({ request }) => {
+  test('POST - 100 chars title', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: longTitle,
@@ -79,9 +79,9 @@ test.describe('job creation - positive scenarios', () => {
   });
 });
 
-test.describe('job creation - negative scenarios', () => {
+test.describe('POST - negative scenarios', () => {
 
-  test('create job - missing title', async ({ request }) => {
+  test('POST - missing title', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: '',
@@ -91,7 +91,7 @@ test.describe('job creation - negative scenarios', () => {
     expect(response.status()).toBe(400);
   });
 
-  test('create job - invalid priority', async ({ request }) => {
+  test('POST - invalid priority', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: 'Process test',
@@ -101,30 +101,29 @@ test.describe('job creation - negative scenarios', () => {
     expect(response.status()).toBe(400);
   });
 
-  test('create job - missing priority', async ({ request }) => {
+  test('POST - missing priority', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: 'Process string',
-        priority: '',
       },
     });
-    expect.soft(response.status()).toBe(201);
+    expect(response.status()).toBe(201);
     const body = await response.json();
-    // From API spec: "Missing priority uses default" - I assume this should be high priority
-    expect.soft(body.priority).toBe('high');
+    // From API spec: "Missing priority uses default" - I assume this should be a medium priority
+    expect(body.priority).toBe('medium');
   });
 
-  test('create job - over 100 chars title', async ({ request }) => {
+  test('POST - over 100 chars title', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: longTitle + '1',
         priority: 'high',
       },
     });
-    expect.soft(response.status()).toBe(400);
+    expect(response.status()).toBe(400);
   });
 
-  test('create job - banned scam', async ({ request }) => {
+  test('POST - banned scam', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: 'This is a scam',
@@ -134,7 +133,7 @@ test.describe('job creation - negative scenarios', () => {
     expect(response.status()).toBe(400);
   });
 
-  test('create job - banned miracle', async ({ request }) => {
+  test('POST - banned miracle', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: 'This is a miracle',
@@ -144,7 +143,7 @@ test.describe('job creation - negative scenarios', () => {
     expect(response.status()).toBe(400);
   });
 
-  test('create job - banned guaranteed', async ({ request }) => {
+  test('POST - banned guaranteed', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: 'This is a guaranteed success',
@@ -154,7 +153,7 @@ test.describe('job creation - negative scenarios', () => {
     expect(response.status()).toBe(400);
   });
 
-  test('create job - banned free', async ({ request }) => {
+  test('POST - banned free', async ({ request }) => {
     const response = await request.post('/jobs', {
       data: {
         title: 'This is free money',
