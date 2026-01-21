@@ -1,0 +1,43 @@
+## Bug Report
+
+### Bug 1: API doesn't return default value for missing job priority
+- **Endpoint:** POST /jobs
+- **Expected:** POST should return 201 and medium priority
+- **Actual:** API returned 400
+- **Test case:** POST - missing priority
+
+### Bug 2: Over 100 chars titles are accepted
+- **Endpoint:** POST /jobs
+- **Expected:** POST should return 400
+- **Actual:** API returned 201
+- **Test case:** POST - over 100 chars title
+
+### Bug 3: Banned words are accepted
+- **Endpoint:** POST /jobs
+- **Expected:** POST should return 400 if title has banned words
+- **Actual:** API returned 201
+- **Test cases:** POST - banned scam; POST - banned miracle; POST - banned guaranteed; POST - banned free; POST - multiply banned words
+
+### Bug 4: Filtering by invalid status should fail
+- **Endpoint:** GET /jobs?status=invalid
+- **Expected:** LIST should return 400
+- **Actual:** API returned 200
+- **Test case:** LIST — invalid status filter returns 400
+
+### Bug 5: Job limit isn't capped
+- **Endpoint:** GET /jobs?limit=150
+- **Expected:** Jobs array should be capped to 100
+- **Actual:** API returned >100
+- **Test case:** LIST — limit over 100 should be capped to 100
+
+### Bug 6: Runnig job can be deleted
+- **Endpoint:** DELETE /jobs
+- **Expected:** Job with running status cannot be deleted
+- **Actual:** API returned 204, job was deleted
+- **Test case:** DELETE — running job cannot be deleted
+
+### Bug 7: Job can be updated from running to completed
+- **Endpoint:** PATCH /jobs
+- **Expected:** Updating job directly to completed should return 400
+- **Actual:** API returned 200, update was successfull
+- **Test case:** UPDATE — invalid transition pending → completed should return 400

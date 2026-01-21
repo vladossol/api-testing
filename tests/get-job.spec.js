@@ -1,21 +1,18 @@
 const { test, expect } = require('@playwright/test');
-const { createJob } = require('../helpers/post.job.js');
+const { createJob, getJob } = require('../helpers/helpers.js');
 
 test('GET - existing job', async ({ request }) => {
-    const { body: job } = await createJob(request);
-
-    const response = await request.get(`/jobs/${job.id}`);
-
+    const createResponse = await createJob(request, 'Test Job', 'high');
+    const job = await createResponse.json();
+    
+    const response = await getJob(request, job.id);
     expect(response.status()).toBe(200);
-
+    
     const received = await response.json();
-
-    expect(received.id).toBe(job.id);
-    expect(received.title).toBe(job.title);
-    expect(received.priority).toBe(job.priority);
+    expect(received).toMatchObject(job);
 });
 
 test('GET - non-existing job', async ({ request }) => {
-    const response = await request.get('/jobs/job-999');
+    const response = await getJob(request, 'non-existent-id');
     expect(response.status()).toBe(404);
 });

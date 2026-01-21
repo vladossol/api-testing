@@ -2,11 +2,11 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: false,
-  forbidOnly: !!process.env.CI,
+  fullyParallel: true,
+  workers: 4,
   retries: 0,
-  workers: 1,
-  reporter: 'html',
+  reporter: ['html', 'list'],
+
   use: {
     baseURL: 'http://localhost:5000',
     extraHTTPHeaders: {
@@ -14,12 +14,10 @@ export default defineConfig({
     },
   },
 
-  /* Start a local server before running the tests */
   webServer: {
     command: 'python mock_server/mock_server.py',
     url: 'http://localhost:5000/jobs',
+    reuseExistingServer: false,
     timeout: 60 * 1000,
-    reuseExistingServer: !process.env.CI,
-  }, 
+  },
 });
-
