@@ -5,7 +5,7 @@ export default defineConfig({
   fullyParallel: true,
   workers: 4,
   retries: 0,
-  reporter: ['html', 'list'],
+  reporter: [['html'], ['list']],
 
   use: {
     baseURL: 'http://localhost:5000',
